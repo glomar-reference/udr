@@ -1,4 +1,4 @@
-{{- define "Deployment-UDR" -}}
+{{- define "Deployment-PCF" -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -19,36 +19,36 @@ spec:
     metadata:
       labels: {{- include "helpers.labels.labels" . | nindent 8 }}
       annotations:
-       checksum/config: {{ include "helpers.config.hash" ( dict "Global" $ "TemplateName" "ConfigMap-UDR.yaml" ) }}
+       checksum/config: {{ include "helpers.config.hash" ( dict "Global" $ "TemplateName" "ConfigMap-PCF.yaml" ) }}
     spec:
       nodeSelector:
-{{ include "helpers.pod.node_selector" ( dict "Global" $ "Application" "udr" ) | nindent 8 }}
+{{ include "helpers.pod.node_selector" ( dict "Global" $ "Application" "pcf" ) | nindent 8 }}
       containers:
-      - name: udr
-        image: {{ include "helpers.pod.container.image" ( dict "Global" $ "Application" "udr" ) }}
+      - name: pcf
+        image: {{ include "helpers.pod.container.image" ( dict "Global" $ "Application" "pcf" ) }}
         imagePullPolicy: {{ .Values.images.pull.policy | quote }}
         command:
-          - /usr/bin/open5gs-udrd
+          - /usr/bin/open5gs-pcfd
         args:
           - -c
-          - /etc/open5gs/udr.yaml
+          - /etc/open5gs/pcf.yaml
         volumeMounts:
           - name: config
-            mountPath: /etc/open5gs/udr.yaml
-            subPath: udr.yaml
+            mountPath: /etc/open5gs/pcf.yaml
+            subPath: pcf.yaml
         livenessProbe:
           tcpSocket:
-            port: {{ index $.Values.config "udr.yaml" "udr" "sbi" "port" }}
+            port: {{ index $.Values.config "pcf.yaml" "pcf" "sbi" "port" }}
         readinessProbe:
           tcpSocket:
-            port: {{ index $.Values.config "udr.yaml" "udr" "sbi" "port" }}
+            port: {{ index $.Values.config "pcf.yaml" "pcf" "sbi" "port" }}
       volumes:
       - name: config
         configMap:
           name: {{ template "helpers.labels.fullname" . }}
           items:
-          - key: udr.yaml
-            path: udr.yaml
+          - key: pcf.yaml
+            path: pcf.yaml
 ...
 {{- end -}}
-{{- include "helpers.template.overlay" ( dict "Global" $ "template_definition" "Deployment-UDR" ) }}
+{{- include "helpers.template.overlay" ( dict "Global" $ "template_definition" "Deployment-PCF" ) }}

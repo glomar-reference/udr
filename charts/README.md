@@ -6,5 +6,5 @@ helm upgrade \
   --install \
   --wait \
   --namespace=open5gs \
-  "udr" \
-  "$(git rev-parse --show-toplevel)/charts/udr"
+  "pcf" \
+  "$(git rev-parse --show-toplevel)/charts/pcf"

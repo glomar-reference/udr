@@ -1,4 +1,4 @@
-{{- define "ConfigMap-UDR" -}}
+{{- define "ConfigMap-PCF" -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -11,4 +11,4 @@ data:
 {{- end }}
 ...
 {{- end -}}
-{{- include "helpers.template.overlay" ( dict "Global" $ "template_definition" "ConfigMap-UDR" ) }}
+{{- include "helpers.template.overlay" ( dict "Global" $ "template_definition" "ConfigMap-PCF" ) }}
